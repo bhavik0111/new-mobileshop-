@@ -3,21 +3,27 @@ include('header.php');
 
 $cat_id=''; 
 $cat_name='';
+$prod_id='';
 $prod_name='';
 $prod_price='';
-$prod_image='';
+$prod_image='  ';
 $count = 0;
 $cat_name_query = '';
 
+//for all category link click show prod_image
 if(isset($_GET['cat_id'])){
    $cat_name_query = 'AND `cat_id` = '.$_GET['cat_id'];
 }
+//end....
 
-  $cat_sql = "SELECT `cat_id` ,`cat_name` FROM `category_master` WHERE `cat_status`='1' ";    
-  $cat_result = mysqli_query($conn, $cat_sql); 
+   $cat_sql = "SELECT `cat_id`, `cat_name` FROM category_master where (SELECT COUNT(prod_id) FROM `product_master` WHERE `cat_id`=category_master.cat_id)>0 AND `cat_status`=1" ;
 
-  $prod_sql = "SELECT `prod_name`, `prod_price`, `prod_image` FROM `product_master` WHERE `prod_status`='1' $cat_name_query ";
-  $prod_result = mysqli_query($conn, $prod_sql);
+     // $cat_sql = "SELECT `cat_id` ,`cat_name` FROM `category_master` WHERE `cat_status`= '1' ";    
+   $cat_result = mysqli_query($conn, $cat_sql); 
+
+   $prod_sql = "SELECT `prod_id`,`prod_name`, `prod_price`, `prod_image` FROM `product_master` WHERE `prod_status`='1' $cat_name_query ";      
+   $prod_result = mysqli_query($conn, $prod_sql);
+
 ?>
 <tr><td width="100%">
    <table width="100%" border="0" >
@@ -28,7 +34,7 @@ if(isset($_GET['cat_id'])){
 
                <?php if($cat_result->num_rows > 0){
                         while ($row = $cat_result->fetch_assoc()){ ?>
-                           <li><a href="index.php?cat_id=<?php echo $row['cat_id']; ?>" value="<?php echo $row['cat_id']; ?>"><?php echo $row['cat_name']; ?></a> </li>
+                           <li><b><a href="index.php?cat_id=<?php echo $row['cat_id']; ?>" value="<?php echo $row['cat_id']; ?>"><?php echo $row['cat_name']; ?></a></b></li>
                      <?php }  } 
                   ?>
             </ul>
@@ -38,10 +44,10 @@ if(isset($_GET['cat_id'])){
                <tr>
                  <?php if($prod_result->num_rows > 0){
                         while($prod_row = $prod_result->fetch_assoc()){  
-                         if($count %3==0 && $count != 0){ echo "  <tr> </tr>"; }  
+                          if($count %3==0 && $count != 0){ echo "  <tr> </tr>"; }  
                      ?>
                   <td align="center"><b>
-                     <a href="#">
+                     <a href="productview.php?prod_id=<?php echo $prod_row['prod_id']; ?>">
                         <img src="<?php echo SITE_URL_IMG . '/product/' . $prod_row['prod_image']; ?>" height="130" width="130">     
                      </a><br><?php echo $prod_row['prod_name']; ?><br>Price  <?php echo $prod_row['prod_price']; ?><br>
                      <a href="#">Add To Cart</a></b>
@@ -56,4 +62,3 @@ if(isset($_GET['cat_id'])){
    </table>
 </td></tr>
 <?php include('footer.php'); ?>
-
