@@ -18,4 +18,11 @@ define("SITE_URL_IMG", "http://192.168.0.1/test/bhavik/mobileshop/images");   //
 // echo SITE_ROOT_URL .'<br>';
 // echo SITE_URL;
 // exit();
+$url = CURRENT_URL;
+if(isset($_GET['cat_id'])) { 
+   $url.= '&cat_id='.$_GET['cat_id']; 
+}
+if(isset($_GET['prod_id'])) { 
+   $url.= '&prod_id='.$_GET['prod_id']; 
+}
 ?>
