@@ -26,30 +26,50 @@ if(isset($_GET['prod_id'])){
      $prodmt_query = "SELECT * FROM `product_meta` WHERE `prod_id` ='".$id."' ";
      $prodmt_result = mysqli_query($conn, $prodmt_query);
 
+
+	if($prod_row_count > 0){
 ?>
 		<td>
 			<table align="" border="1">
-				<tr class="mount">
-					<td width="80"><?php
-						if($prod_row_count > 0){ ?>
-	               		<img class="splide" src="<?php echo SITE_URL_IMG . '/product/' . $prod_row['prod_image']; ?>" height="250" width="250"><?php 
-	               }else{ 
-	               	header("location:".SITE_URL."/index.php");
-	               }?>
+				<tr>
+					<td width="80">
+	               		<img src="<?php echo SITE_URL_IMG . '/product/' . $prod_row['prod_image']; ?>" height="250" width="250">
 	            </td>
 	            <td align="center">
-	            	<?php echo $prod_row['cat_id']; ?><br>
+	            	<?php echo $cat_name; ?><br>
 						<b>Name </b><?php echo $prod_row['prod_name']; ?><br>
 						<b>Price </b><?php echo $prod_row['prod_price']; ?><br>
 						<b>Description </b><?php echo $prod_row['prod_desc']; ?><br>
 					</td> 
-					   <?php
-						if($prodmt_result->num_rows > 0){
-	                  while($show_prodmt = mysqli_fetch_array($prodmt_result)){ ?>
-					<td>
-						<img class="splide" src="<?php echo SITE_URL_IMG . '/product/' . $show_prodmt['prodmt_glrimg']; ?>" height="80" width="80">
+					
+							<td width="40">
+								<div class="wrapper">
+									<!-- Images Area slice-->
+									<div class="images-area">
+									<?php
+										if($prodmt_result->num_rows > 0){
+											$count = 0;
+											while($show_prodmt = mysqli_fetch_array($prodmt_result)){ 
+												?>
+										<img src="<?php echo SITE_URL_IMG . '/product/' . $show_prodmt['prodmt_glrimg']; ?>"  alt="image" class="<?php echo (($count == 0) ? 'firstImage' : '') ?>"  style="min-width:400px;max-width:400px;">
+										
+										<?php $count++; } } ?>
+									</div>
+									<!-- Buttons Area -->
+									<div class="buttons-area">
+										<div class="previous-btn">
+										<i class='bx bx-chevron-left'></i>
+										</div>
+										<div class="next-btn">
+										<i class='bx bx-chevron-right'></i>
+										</div>
+									</div>
+									<!-- Pagination Area -->
+									<div class="pagination-area">
+									</div>
+						</div>
 					</td>
-						<?php } } ?>
+						
 				</tr>
 				<tr align="center">
 					<td>
@@ -59,8 +79,12 @@ if(isset($_GET['prod_id'])){
 					</td>
 				</tr>
 			</table>
-		</td>
+		</td><?php 
+	}else{ 
+		header("location:".SITE_URL."/index.php");
+	}?>
 	</tr>
 	</table>
 </td></tr>
+
 <?php include('footer.php'); ?>
